@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef63b265-743a-4422-838c-5e655db792ac" name="Changes" comment="" />
+    <list default="true" id="ef63b265-743a-4422-838c-5e655db792ac" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,12 +40,13 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/a-ast/Downloads/Zasyadko-QA-Practice-3/Zasyadko-QA-Practice-3/Homework3",
     "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="TestNG.First_java_class.testMoveMouse">
+  <component name="RunManager" selected="TestNG.First_java_class.testCardNumbervalidator">
     <configuration name="First_java_class" type="TestNG" temporary="true" nameIsGenerated="true">
       <module name="praktika_13" />
       <option name="PACKAGE_NAME" value="" />
