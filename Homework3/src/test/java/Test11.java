@@ -66,7 +66,18 @@ WebElement cvcHint = driver.findElement(By.id("cvc-hint"));
 Actions actions = new Actions(driver);
 actions.moveToElement(cvcHint).click().build().perform();
 driver.wait(3000);
+//assertEquals(driver.findElement(By.xpath("//*[@class='opened']")).getScreenshotAs("screenshot.jpg"), "Card number is not valid");
 }
+
+    public void checkCVCValidator() {
+        driver.get(baseUrl);
+        WebElement cardNumber = driver.findElement(By.id("input-card-number"));
+        WebElement cardHolder = driver.findElement(By.id("input-card-holder"));
+        cardNumber.clear();
+        cardNumber.sendKeys("0000 0000 0000 0000");
+        cardHolder.click();
+        assertEquals(driver.findElement(By.xpath("//*[@id=\"card-number-field\"]/div/label")).getText(), "Card number is not valid");
+    }
 //Негативный тест с неправильными данными
         @Test
 public void declinedStatus() {
@@ -90,6 +101,102 @@ WebElement cardCVC = driver.findElement(By.id("input-card-cvc"));
         //Проверка введенных неправильных данных (номер карты и имя на карте)
         assertEquals(driver.findElement(By.xpath("//label[text()='Card number is not valid']")).getText(), "Card number is not valid");
         assertEquals(driver.findElement(By.xpath("//label[text()='Cardholder name is not valid']")).getText(), "Cardholder name is not valid");
+    }
+    @Test  //провека мастеркард
+    public void Mastercard() {
+        driver.get(baseUrl);
+        WebElement cardNumber = driver.findElement(By.id("input-card-number"));
+        WebElement cardHolder = driver.findElement(By.id("input-card-holder"));
+        WebElement cardExpiresMonth = driver.findElement(By.id("card-expires-month"));
+        WebElement cardYear = driver.findElement(By.id("card-expires-year"));
+        WebElement cardCVC = driver.findElement(By.id("input-card-cvc"));
+        cardNumber.clear();
+        cardNumber.sendKeys("5555555555554477");
+        cardHolder.clear();
+        cardHolder.sendKeys("Ivan Petrov");
+        cardExpiresMonth.click();
+        new Select(cardExpiresMonth).selectByVisibleText("05");
+        cardYear.click();
+        new Select(cardYear).selectByVisibleText("2025");
+        cardCVC.clear();
+        cardCVC.sendKeys("100");
+        driver.findElement(By.id("action-submit")).click();
+        //Проверка введенных неправильных данных (номер карты и имя на карте)
+        assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-status']/div[2]")).getText(), "Declined by issuing bank");
+        assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-cardtype']/div[2]")).getText(), "MASTERCARD");
+    }
+    @Test  //провека 3D Secured
+    public void Securedeclinemastercad() {
+        driver.get(baseUrl);
+        WebElement cardNumber = driver.findElement(By.id("input-card-number"));
+        WebElement cardHolder = driver.findElement(By.id("input-card-holder"));
+        WebElement cardExpiresMonth = driver.findElement(By.id("card-expires-month"));
+        WebElement cardYear = driver.findElement(By.id("card-expires-year"));
+        WebElement cardCVC = driver.findElement(By.id("input-card-cvc"));
+        cardNumber.clear();
+        cardNumber.sendKeys("5555555555554444");
+        cardHolder.clear();
+        cardHolder.sendKeys("Ivan Petrov");
+        cardExpiresMonth.click();
+        new Select(cardExpiresMonth).selectByVisibleText("07");
+        cardYear.click();
+        new Select(cardYear).selectByVisibleText("2027");
+        cardCVC.clear();
+        cardCVC.sendKeys("102");
+        driver.findElement(By.id("action-submit")).click();
+        driver.findElement(By.xpath("//button[@id='failure']")).click();
+
+        assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-status']/div[2]")).getText(), "Declined by issuing bank");
+        assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-cardtype']/div[2]")).getText(), "MASTERCARD");
+    }
+    @Test  //проверка 3д безоасность визы
+    public void Securevisa3d() {
+        driver.get(baseUrl);
+        WebElement cardNumber = driver.findElement(By.id("input-card-number"));
+        WebElement cardHolder = driver.findElement(By.id("input-card-holder"));
+        WebElement cardExpiresMonth = driver.findElement(By.id("card-expires-month"));
+        WebElement cardYear = driver.findElement(By.id("card-expires-year"));
+        WebElement cardCVC = driver.findElement(By.id("input-card-cvc"));
+        cardNumber.clear();
+        cardNumber.sendKeys("4000000000000002");
+        cardHolder.clear();
+        cardHolder.sendKeys("Ivan Petrov");
+        cardExpiresMonth.click();
+        new Select(cardExpiresMonth).selectByVisibleText("07");
+        cardYear.click();
+        new Select(cardYear).selectByVisibleText("2027");
+        cardCVC.clear();
+        cardCVC.sendKeys("102");
+        driver.findElement(By.id("action-submit")).click();
+        driver.findElement(By.xpath("//button[@id='success']")).click();
+
+        assertEquals(driver.findElement(By.xpath("//div[@id='payment-status-title']/span")).getText(), "Success");
+        assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-cardtype']/div[2]")).getText(), "VISA");
+    }
+    @Test  //проверка ФИО с первой страницы оплаты и на следющей
+    public void SecureFIO() {
+        driver.get(baseUrl);
+        WebElement cardNumber = driver.findElement(By.id("input-card-number"));
+        WebElement cardHolder = driver.findElement(By.id("input-card-holder"));
+        WebElement cardExpiresMonth = driver.findElement(By.id("card-expires-month"));
+        WebElement cardYear = driver.findElement(By.id("card-expires-year"));
+        WebElement cardCVC = driver.findElement(By.id("input-card-cvc"));
+        cardNumber.clear();
+        cardNumber.sendKeys("4000000000000051");
+        cardHolder.clear();
+        cardHolder.sendKeys("IVAN PETROV");
+        cardExpiresMonth.click();
+        new Select(cardExpiresMonth).selectByVisibleText("07");
+        cardYear.click();
+        new Select(cardYear).selectByVisibleText("2027");
+        cardCVC.clear();
+        cardCVC.sendKeys("102");
+        driver.findElement(By.id("action-submit")).click();
+
+
+      assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-cardholder']/div[2]")).getText(), "IVAN PETROV");
+      assertEquals(driver.findElement(By.xpath("//div[@id='payment-item-ordernumber']/div[2]")).getText(), "458211");
+      assertEquals(driver.findElement(By.xpath("//div[@id='payment-status-title']/span")).getText(), "Info");
     }
     @AfterClass(alwaysRun = true)
     public void tearDown() throws Exception {
